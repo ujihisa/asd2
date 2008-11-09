@@ -16,4 +16,13 @@ class TestGeneratePrimes < Test::Unit::TestCase
     assert_equal(25, cent_array.size)
     assert_equal(97, cent_array.last)
   end
+  def test_exhaustive
+    (2..500).each do |n|
+      generate_primes(n).each do |prime|
+        (2...prime).each do |factor|
+          assert_not_equal 0, prime%factor, "#{prime}, #{factor}"
+        end
+      end
+    end
+  end
 end
