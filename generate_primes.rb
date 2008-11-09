@@ -1,5 +1,5 @@
+require 'mathn'
 
 def generate_primes(num)
-  # FIXME
-  [num]
+  Prime.new.take_while {|i| i <= num }
 end
