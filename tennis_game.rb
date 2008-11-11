@@ -22,7 +22,7 @@ module TennisGame
     end
     # human readable
     def score
-      calculate_score(@score[@player1], @score[@player2])
+      judge
     end
 
     def raw_score
@@ -34,34 +34,47 @@ module TennisGame
     end
 
     def add(player)
+      raise @winner.inspect if winner
       @score[player] += 1
     end
 
     def winner
-      case
-      when @score[@player1] == @score[@player2]
-        nil
-      when @score[@player1] >= 4
-        @player1
-      when @score[@player2] >= 4
-        @player2
+      return @winner if @winner
+      result = judge
+      case result
+      when Player
+        result
       else
         nil
       end
     end
 
     private
-    
-    def calculate_score(point1, point2)
-      case
-      when point1 >= 4 && point2 >= 4 && point1 == point2
-        :duce
-      when point1 >= 4 && point2 >= 4 && point1 > point2
-        :advantage
-      when point1 >= 4 && point2 >= 4 && point1 < point2
-        :advantage
+
+    def judge
+      p1, p2 = @score[@player1], @score[@player2]
+      if p1 >= 3 && p2 >= 3
+        case
+        when p1 == p2
+          :duce
+        when (p1 - p2).abs == 1
+          :advantage
+        when (p1 - p2).abs >= 2
+          if p1 > p2
+            @player1
+          else
+            @player2
+          end
+        end
       else
-        [point1, point2]
+        case
+        when p1 == 4
+          @player1
+        when p2 == 4
+          @player2
+        else
+          [p1, p2]
+        end
       end
     end
   end

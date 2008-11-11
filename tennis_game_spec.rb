@@ -79,4 +79,105 @@ describe "TennisGame::Game" do
       @game.winner.should == nil
     end
   end
+  describe "player1 と player2 が 3 ポイントずつ取ったとき" do
+    before do
+      @player1 = TennisGame::Player.new('a')
+      @player2 = TennisGame::Player.new('b')
+      @game = TennisGame::Game.new(@player1, @player2)
+      3.times{
+        @game.add(@player1)
+        @game.add(@player2)
+      }
+    end
+    it "は、ジュースであること" do
+      @game.score.should == :duce
+    end
+    it "は、勝者は未定であること" do
+      @game.winner.should == nil
+    end
+  end
+  describe "player1 が 4 ポイント取り player2 が 3 ポイント取ったとき" do
+    before do
+      @player1 = TennisGame::Player.new('a')
+      @player2 = TennisGame::Player.new('b')
+      @game = TennisGame::Game.new(@player1, @player2)
+      3.times{
+        @game.add(@player1)
+        @game.add(@player2)
+      }
+      @game.add(@player1)
+    end
+    it "は、アドバンテージであること" do
+      @game.score.should == :advantage
+    end
+    it "は、勝者は未定であること" do
+      @game.winner.should == nil
+    end
+  end
+  describe "player1 が 3 ポイント取り player2 が 4 ポイント取ったとき" do
+    before do
+      @player1 = TennisGame::Player.new('a')
+      @player2 = TennisGame::Player.new('b')
+      @game = TennisGame::Game.new(@player1, @player2)
+      3.times{
+        @game.add(@player1)
+        @game.add(@player2)
+      }
+      @game.add(@player2)
+    end
+    it "は、アドバンテージであること" do
+      @game.score.should == :advantage
+    end
+    it "は、勝者は未定であること" do
+      @game.winner.should == nil
+    end
+  end
+  describe "player1 が 5 ポイント取り player2 が 3 ポイント取ったとき" do
+    before do
+      @player1 = TennisGame::Player.new('a')
+      @player2 = TennisGame::Player.new('b')
+      @game = TennisGame::Game.new(@player1, @player2)
+      3.times{
+        @game.add(@player1)
+        @game.add(@player2)
+      }
+      @game.add(@player1)
+      @game.add(@player1)
+    end
+    it "は、勝者は player1 であること" do
+      @game.winner.should == @player1
+    end
+  end
+  describe "player1 が 3 ポイント取り player2 が 5 ポイント取ったとき" do
+    before do
+      @player1 = TennisGame::Player.new('a')
+      @player2 = TennisGame::Player.new('b')
+      @game = TennisGame::Game.new(@player1, @player2)
+      3.times{
+        @game.add(@player1)
+        @game.add(@player2)
+      }
+      @game.add(@player2)
+      @game.add(@player2)
+    end
+    it "は、勝者は player2 であること" do
+      @game.winner.should == @player2
+    end
+  end
+  describe "ゲームの勝者が決まった後にポイントを追加したとき" do
+    before do
+      @player1 = TennisGame::Player.new('a')
+      @player2 = TennisGame::Player.new('b')
+      @game = TennisGame::Game.new(@player1, @player2)
+      3.times{
+        @game.add(@player1)
+        @game.add(@player2)
+      }
+      @game.add(@player1)
+      @game.add(@player1)
+    end
+    it "は、例外が発生すること" do
+      lambda{ @game.add(@player1) }.should raise_error(StandardError)
+    end
+  end
 end
