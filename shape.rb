@@ -3,8 +3,8 @@ class Shape
   include Comparable
 
   ORDER_TABLE = %w[
-                 Square,
-                 Circle,
+                 Square
+                 Circle
                 ]
 
   def draw
@@ -12,12 +12,7 @@ class Shape
   end
 
   def <=>(other)
-    return 0 if ORDER_TABLE.index(self.class.to_s) == ORDER_TABLE.index(other.class.to_s)
-    if ORDER_TABLE.index(self.class.to_s) < ORDER_TABLE.index(other.class.to_s)
-      -1
-    else
-      1
-    end
+    ORDER_TABLE.index(self.class.to_s) <=> ORDER_TABLE.index(other.class.to_s)
   end
 end
 
