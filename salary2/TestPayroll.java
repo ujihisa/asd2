@@ -1,4 +1,6 @@
-public class TestPayroll {
+import junit.framework.TestCase;
+
+public class TestPayroll extends TestCase {
   public void testAddSalariedEmployee() {
     System.err.println("TestAddSalariedEmployee");
     int empId = 1;
