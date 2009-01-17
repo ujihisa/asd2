@@ -24,11 +24,11 @@ class AddEmployeeTransaction
   end
   
   def classification
-    raise 'must implements in subclass'
+    raise 'must implement in subclass'
   end
   
   def schedule
-    raise 'must implements in subclass'
+    raise 'must implement in subclass'
   end
   
 end
