@@ -3,6 +3,7 @@ require 'payroll_database'
 require 'add_salaried_employee'
 require 'add_hourly_employee'
 require 'add_commissioned_employee'
+require 'delete_employee_transaction'
 
 describe 'Payroll' do
   describe 'Add SaraliedEmployee' do
@@ -28,7 +29,7 @@ describe 'Payroll' do
 
   describe "Add HourlyEmployee" do
     before do
-      @employee_id = 1
+      @employee_id = 2
       @t = AddHourlyEmployee.new(@employee_id, 'Bob', 'Home', 10.0)
       @t.execute
       @e = PayrollDatabase.instance.employee(@employee_id)
@@ -49,7 +50,7 @@ describe 'Payroll' do
 
   describe "Add CommissionedEmployee" do
     before do
-      @employee_id = 1
+      @employee_id = 3
       @t = AddCommissionedEmployee.new(@employee_id, 'Bob', 'Home', 800.0, 10.0)
       @t.execute
       @e = PayrollDatabase.instance.employee(@employee_id)
@@ -68,6 +69,20 @@ describe 'Payroll' do
     end
     it 'should be that schedule is hourly' do
       @e.schedule.class.should == BiWeeklySchedule
+    end
+  end
+
+  describe "Delete an employee" do
+    before do
+      @employee_id = 4
+      @t = AddCommissionedEmployee.new(@employee_id, 'Bob', 'Home', 800.0, 10.0)
+      @t.execute
+      @dt = DeleteEmployeeTransaction.new(@employee_id)
+      @dt.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+    end
+    it "should delete an employee" do
+      @e.should == nil
     end
   end
 end
