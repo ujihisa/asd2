@@ -5,6 +5,7 @@ require 'add_hourly_employee'
 require 'add_commissioned_employee'
 require 'delete_employee_transaction'
 require 'time_card_transaction'
+require 'sales_receipt_transaction'
 
 describe 'Payroll' do
   describe 'Add SaraliedEmployee' do
@@ -98,8 +99,24 @@ describe 'Payroll' do
       @hc = @e.classification
       @tc = @hc.time_card(Date.new(2001,10,31))
     end
-    it "should be that time card record working hours" do
+    it "should record working hours" do
       @tc.hours.should == 8.0
+    end
+  end
+
+  describe "SalesReceiptTransaction" do
+    before do
+      @employee_id = 3
+      @t = AddCommissionedEmployee.new(@employee_id, 'Bob', 'Home', 800.0, 10.0)
+      @t.execute
+      @srt = SalesReceiptTransaction.new(Date.new(2008,1,19), 100.0, @employee_id)
+      @srt.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+      @c = @e.classification
+      @sr = @c.sales_receipt(Date.new(2008,1,19))
+    end
+    it 'should record amount' do
+      @sr.amount.should == 100.0
     end
   end
 

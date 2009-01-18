@@ -14,7 +14,7 @@ class HourlyClassification
 
   def initialize(hourly_rate)
     @hourly_rate = hourly_rate
-    @records = { }
+    @records = {}
   end
 
   def time_card(date)
@@ -34,6 +34,14 @@ class CommissionedClassification
   def initialize(salary, commissioned_rate)
     @salary = salary
     @commissioned_rate = commissioned_rate
+    @records = {}
   end
 
+  def sales_receipt=(sales_receipt)
+    @records[sales_receipt.date] = sales_receipt
+  end
+
+  def sales_receipt(date)
+    @records[date]
+  end
 end
