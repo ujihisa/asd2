@@ -12,6 +12,9 @@ require 'change_address_transaction'
 require 'change_hourly_transaction'
 require 'change_salaried_transaction'
 require 'change_commissioned_transaction'
+require 'change_direct_transaction'
+require 'change_mail_transaction'
+require 'change_hold_transaction'
 
 describe 'Payroll' do
   describe 'Add SaraliedEmployee' do
@@ -252,4 +255,56 @@ describe 'Payroll' do
       @e.schedule.class == BiWeeklySchedule
     end
   end
+
+  describe "change payment method to direct" do
+    before do
+      @employee_id = 3
+      @t = AddSalariedEmployee.new(@employee_id, 'Bob', 'Home', 2500.0)
+      @t.execute
+      @ct = ChangeDirectTransaction.new(@employee_id, 'bank', 'bob account')
+      @ct.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+    end
+    it "should not be null" do
+      @e.should_not nil
+    end
+    it "should have payment method that is direct method" do
+      @e.method.class.should == DirectMethod
+    end
+  end
+
+  describe "change payment method to mail" do
+    before do
+      @employee_id = 3
+      @t = AddSalariedEmployee.new(@employee_id, 'Bob', 'Home', 2500.0)
+      @t.execute
+      @ct = ChangeMailTransaction.new(@employee_id, 'bob address')
+      @ct.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+    end
+    it "should not be null" do
+      @e.should_not nil
+    end
+    it "should have payment method that is mail method" do
+      @e.method.class.should == MailMethod
+    end
+  end
+
+  describe "change payment method to hold" do
+    before do
+      @employee_id = 3
+      @t = AddSalariedEmployee.new(@employee_id, 'Bob', 'Home', 2500.0)
+      @t.execute
+      @ct = ChangeHoldTransaction.new(@employee_id, 'bob address')
+      @ct.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+    end
+    it "should not be null" do
+      @e.should_not nil
+    end
+    it "should have payment method that is hold method" do
+      @e.method.class.should == HoldMethod
+    end
+  end
+
 end

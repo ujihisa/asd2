@@ -1,5 +1,6 @@
 require 'transaction'
 require 'employee'
+require 'payment_method'
 
 class AddEmployeeTransaction
   include Transaction
@@ -15,7 +16,7 @@ class AddEmployeeTransaction
   def execute
     c = classification()
     s = schedule()
-    m = HoldMethod.new
+    m = HoldMethod.new(address)
     e = Employee.new(employee_id, name, address)
     e.classification = c
     e.schedule = s
@@ -31,7 +32,4 @@ class AddEmployeeTransaction
     raise 'must implement in subclass'
   end
   
-end
-
-class HoldMethod
 end
