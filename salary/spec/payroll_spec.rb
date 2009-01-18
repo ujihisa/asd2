@@ -11,6 +11,7 @@ require 'change_name_transaction'
 require 'change_address_transaction'
 require 'change_hourly_transaction'
 require 'change_salaried_transaction'
+require 'change_commissioned_transaction'
 
 describe 'Payroll' do
   describe 'Add SaraliedEmployee' do
@@ -218,11 +219,37 @@ describe 'Payroll' do
     it "should have salaried classification" do
       @e.classification.class.should == SalariedClassification
     end
-    it "should have a rate 2500.0" do
+    it "should have a salary 2500.0" do
       @e.classification.salary.should == 2500.0
     end
     it "should have a monthly schedule" do
       @e.schedule.class == MonthlySchedule
+    end
+  end
+
+  describe "change salaried to commissioned" do
+    before do
+      @employee_id = 3
+      @t = AddSalariedEmployee.new(@employee_id, 'Bob', 'Home', 2500.0)
+      @t.execute
+      @ct = ChangeCommissionedTransaction.new(@employee_id, 2500.0, 100.0)
+      @ct.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+    end
+    it "should not be null" do
+      @e.should_not nil
+    end
+    it "should have commissioned classification" do
+      @e.classification.class.should == CommissionedClassification
+    end
+    it "should have a salary 2500.0" do
+      @e.classification.salary.should == 2500.0
+    end
+    it "should have a commissioned rate 100.0" do
+      @e.classification.commissioned_rate.should == 100.0
+    end
+    it "should have a biweekly schedule" do
+      @e.schedule.class == BiWeeklySchedule
     end
   end
 end

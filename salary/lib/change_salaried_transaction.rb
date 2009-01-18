@@ -2,9 +2,9 @@ require 'change_classification_transaction'
 
 class ChangeSalariedTransaction < ChangeClassificationTransaction
 
-  def initialize(employee_id, rate)
+  def initialize(employee_id, salary)
     @employee_id = employee_id
-    @rate = rate
+    @salary = salary
   end
 
   def new_schedule
@@ -12,6 +12,6 @@ class ChangeSalariedTransaction < ChangeClassificationTransaction
   end
 
   def new_classification
-    SalariedClassification.new(@rate)
+    SalariedClassification.new(@salary)
   end
 end
