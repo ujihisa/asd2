@@ -9,6 +9,8 @@ require 'sales_receipt_transaction'
 require 'service_charge_transaction'
 require 'change_name_transaction'
 require 'change_address_transaction'
+require 'change_hourly_transaction'
+require 'change_salaried_transaction'
 
 describe 'Payroll' do
   describe 'Add SaraliedEmployee' do
@@ -178,7 +180,49 @@ describe 'Payroll' do
     end
   end
 
+  describe "change commissioned to hourly" do
+    before do
+      @employee_id = 3
+      @t = AddCommissionedEmployee.new(@employee_id, 'Bob', 'Home', 800.0, 10.0)
+      @t.execute
+      @ct = ChangeHourlyTransaction.new(@employee_id, 27.52)
+      @ct.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+    end
+    it "should not be null" do
+      @e.should_not nil
+    end
+    it "should have hourly classification" do
+      @e.classification.class.should == HourlyClassification
+    end
+    it "should have a hourly rate 27.52" do
+      @e.classification.hourly_rate.should == 27.52
+    end
+    it "should have a weekly schedule" do
+      @e.schedule.class == WeeklySchedule
+    end
+  end
+
+  describe "change commissioned to salaried" do
+    before do
+      @employee_id = 3
+      @t = AddCommissionedEmployee.new(@employee_id, 'Bob', 'Home', 800.0, 10.0)
+      @t.execute
+      @ct = ChangeSalariedTransaction.new(@employee_id, 2500.0)
+      @ct.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+    end
+    it "should not be null" do
+      @e.should_not nil
+    end
+    it "should have salaried classification" do
+      @e.classification.class.should == SalariedClassification
+    end
+    it "should have a rate 2500.0" do
+      @e.classification.salary.should == 2500.0
+    end
+    it "should have a monthly schedule" do
+      @e.schedule.class == MonthlySchedule
+    end
+  end
 end
-
-
-
