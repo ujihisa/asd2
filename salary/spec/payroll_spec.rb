@@ -6,6 +6,7 @@ require 'add_commissioned_employee'
 require 'delete_employee_transaction'
 require 'time_card_transaction'
 require 'sales_receipt_transaction'
+require 'service_charge_transaction'
 
 describe 'Payroll' do
   describe 'Add SaraliedEmployee' do
@@ -117,6 +118,27 @@ describe 'Payroll' do
     end
     it 'should record amount' do
       @sr.amount.should == 100.0
+    end
+  end
+
+  describe "add service charge" do
+    before do
+      @employee_id = 2
+      @t = AddHourlyEmployee.new(@employee_id, 'Bob', 'Home', 15.25)
+      @t.execute
+      @tct = TimeCardTransaction.new(Date.new(2001,10,31), 8.0, @employee_id)
+      @tct.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+      @af = UnionAffiliation.new(12.5)
+      @e.affiliation = @af
+      @member_id = 86
+      PayrollDatabase.instance.add_union_member(@member_id, @e)
+      @sct = ServiceChargeTransaction.new(@member_id, Date.new(2001,10,31), 12.95)
+      @sct.execute
+      @sc = @af.service_charge(Date.new(2001,10,31))
+    end
+    it "shoud be 12.95" do
+      @sc.amount.should == 12.95
     end
   end
 

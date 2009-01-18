@@ -12,6 +12,7 @@ class PayrollDatabase
 
   def initialize
     @employees = {}
+    @union_members = {}
   end
 
   def add_employee(employee_id, employee)
@@ -28,5 +29,13 @@ class PayrollDatabase
 
   def delete_employee(employee_id)
     @employees.delete(employee_id)
+  end
+
+  def add_union_member(member_id, employee)
+    @union_members[member_id] = employee
+  end
+
+  def union_member(member_id)
+    @union_members[member_id]
   end
 end
