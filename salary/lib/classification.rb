@@ -14,6 +14,15 @@ class HourlyClassification
 
   def initialize(hourly_rate)
     @hourly_rate = hourly_rate
+    @records = { }
+  end
+
+  def time_card(date)
+    @records[date]
+  end
+
+  def time_card=(time_card)
+    @records[time_card.date] = time_card
   end
 end
 

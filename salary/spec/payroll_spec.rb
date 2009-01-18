@@ -4,6 +4,7 @@ require 'add_salaried_employee'
 require 'add_hourly_employee'
 require 'add_commissioned_employee'
 require 'delete_employee_transaction'
+require 'time_card_transaction'
 
 describe 'Payroll' do
   describe 'Add SaraliedEmployee' do
@@ -85,6 +86,23 @@ describe 'Payroll' do
       @e.should == nil
     end
   end
+
+  describe "TimeCardTransaction" do
+    before do
+      @employee_id = 2
+      @t = AddHourlyEmployee.new(@employee_id, 'Bob', 'Home', 10.0)
+      @t.execute
+      @tct = TimeCardTransaction.new(Date.new(2001,10,31), 8.0, @employee_id)
+      @tct.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+      @hc = @e.classification
+      @tc = @hc.time_card(Date.new(2001,10,31))
+    end
+    it "should be that time card record working hours" do
+      @tc.hours.should == 8.0
+    end
+  end
+
 end
 
 
