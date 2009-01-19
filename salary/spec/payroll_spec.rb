@@ -15,6 +15,7 @@ require 'change_commissioned_transaction'
 require 'change_direct_transaction'
 require 'change_mail_transaction'
 require 'change_hold_transaction'
+require 'change_union_member_transaction'
 
 describe 'Payroll' do
   describe 'Add SaraliedEmployee' do
@@ -307,4 +308,29 @@ describe 'Payroll' do
     end
   end
 
+  describe "change affiliation to union member" do
+    before do
+      @employee_id = 3
+      @union_member_id = 7734
+      @t = AddSalariedEmployee.new(@employee_id, 'Bob', 'Home', 2500.0)
+      @t.execute
+      @ct = ChangeUnionMemberTransaction.new(@employee_id, @union_member_id, 99.42)
+      @ct.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+      @af = @e.affiliation
+      @member = PayrollDatabase.instance.union_member(@union_member_id)
+    end
+    it "should not be null" do
+      @af.should_not nil
+    end
+    it "should have dues 99.42" do
+      @af.dues.should == 99.42
+    end
+    it "should record a union member" do
+      @member.should_not nil
+    end
+    it "should be same the employee and the union member" do
+      @e.should == @member
+    end
+  end
 end
