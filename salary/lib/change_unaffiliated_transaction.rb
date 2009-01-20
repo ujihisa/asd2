@@ -12,6 +12,7 @@ class ChangeUnaffiliatedTransaction < ChangeAffiliationTransaction
   end
 
   def record_membership(e)
+    return unless e.affiliation.instance_of?(UnionAffiliation)
     PayrollDatabase.instance.delete_union_member(e.affiliation.member_id)
   end
 end
