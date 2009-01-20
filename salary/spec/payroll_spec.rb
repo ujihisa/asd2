@@ -16,6 +16,7 @@ require 'change_direct_transaction'
 require 'change_mail_transaction'
 require 'change_hold_transaction'
 require 'change_union_member_transaction'
+require 'change_unaffiliated_transaction'
 
 describe 'Payroll' do
   describe 'Add SaraliedEmployee' do
@@ -160,7 +161,7 @@ describe 'Payroll' do
       @cnt.execute
       @e = PayrollDatabase.instance.employee(@employee_id)
     end
-    it "should not be null" do
+    it "should not be nil" do
       @e.should_not nil
     end
     it "should be 'Bob'" do
@@ -177,7 +178,7 @@ describe 'Payroll' do
       @cnt.execute
       @e = PayrollDatabase.instance.employee(@employee_id)
     end
-    it "should not be null" do
+    it "should not be nil" do
       @e.should_not nil
     end
     it "should be 'House'" do
@@ -194,7 +195,7 @@ describe 'Payroll' do
       @ct.execute
       @e = PayrollDatabase.instance.employee(@employee_id)
     end
-    it "should not be null" do
+    it "should not be nil" do
       @e.should_not nil
     end
     it "should have hourly classification" do
@@ -217,7 +218,7 @@ describe 'Payroll' do
       @ct.execute
       @e = PayrollDatabase.instance.employee(@employee_id)
     end
-    it "should not be null" do
+    it "should not be nil" do
       @e.should_not nil
     end
     it "should have salaried classification" do
@@ -240,7 +241,7 @@ describe 'Payroll' do
       @ct.execute
       @e = PayrollDatabase.instance.employee(@employee_id)
     end
-    it "should not be null" do
+    it "should not be nil" do
       @e.should_not nil
     end
     it "should have commissioned classification" do
@@ -266,7 +267,7 @@ describe 'Payroll' do
       @ct.execute
       @e = PayrollDatabase.instance.employee(@employee_id)
     end
-    it "should not be null" do
+    it "should not be nil" do
       @e.should_not nil
     end
     it "should have payment method that is direct method" do
@@ -283,7 +284,7 @@ describe 'Payroll' do
       @ct.execute
       @e = PayrollDatabase.instance.employee(@employee_id)
     end
-    it "should not be null" do
+    it "should not be nil" do
       @e.should_not nil
     end
     it "should have payment method that is mail method" do
@@ -300,7 +301,7 @@ describe 'Payroll' do
       @ct.execute
       @e = PayrollDatabase.instance.employee(@employee_id)
     end
-    it "should not be null" do
+    it "should not be nil" do
       @e.should_not nil
     end
     it "should have payment method that is hold method" do
@@ -320,7 +321,7 @@ describe 'Payroll' do
       @af = @e.affiliation
       @member = PayrollDatabase.instance.union_member(@union_member_id)
     end
-    it "should not be null" do
+    it "should not be nil" do
       @af.should_not nil
     end
     it "should have dues 99.42" do
@@ -331,6 +332,31 @@ describe 'Payroll' do
     end
     it "should be same the employee and the union member" do
       @e.should == @member
+    end
+  end
+
+  describe "change affiliation to unaffiliated" do
+    before do
+      @employee_id = 3
+      @union_member_id = 7734
+      @t = AddSalariedEmployee.new(@employee_id, 'Bob', 'Home', 2500.0)
+      @t.execute
+      @ct = ChangeUnionMemberTransaction.new(@employee_id, @union_member_id, 99.42)
+      @ct.execute
+      @ct = ChangeUnaffiliatedTransaction.new(@employee_id)
+      @ct.execute
+      @e = PayrollDatabase.instance.employee(@employee_id)
+      @af = @e.affiliation
+      @member = PayrollDatabase.instance.union_member(@union_member_id)
+    end
+    it "should not be nil" do
+      @af.should_not nil
+    end
+    it "should be NoAffiliation" do
+      @af.class.should == NoAffiliation
+    end
+    it "should be nil" do
+      @member.should nil
     end
   end
 end

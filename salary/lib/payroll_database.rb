@@ -25,6 +25,7 @@ class PayrollDatabase
 
   def clear
     @employees.clear
+    @union_members.clear
   end
 
   def delete_employee(employee_id)
@@ -37,5 +38,9 @@ class PayrollDatabase
 
   def union_member(member_id)
     @union_members[member_id]
+  end
+
+  def delete_union_member(member_id)
+    @union_members.delete(member_id)
   end
 end

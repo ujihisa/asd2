@@ -7,8 +7,10 @@ end
 class UnionAfiliation
   include Affiliation
 
-  def initialize(union_member_id, dues)
-    @union_member_id = union_member_id
+  attr_reader :member_id
+
+  def initialize(member_id, dues)
+    @member_id = member_id
     @dues = dues
   end
 end
